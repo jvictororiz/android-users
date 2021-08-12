@@ -1,6 +1,6 @@
-package com.picpay.desafio.android.domain.repository.contract
+package com.picpay.desafio.android.users.domain.repository.contract
 
-import com.picpay.desafio.android.domain.model.User
+import com.picpay.desafio.android.users.domain.model.User
 import io.reactivex.Single
 
 interface UserRepository {

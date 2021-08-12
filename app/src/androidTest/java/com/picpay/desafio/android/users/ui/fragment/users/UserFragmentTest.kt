@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.ui.fragment.users
+package com.picpay.desafio.android.users.ui.fragment.users
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import org.junit.Test
@@ -61,7 +61,7 @@ class UserFragmentTest {
     }
 
     @Test
-    fun getUsersWithError_AfterRefreshAndUpdateWithConnection() {
+    fun getUsersWithError_AfterSwipeAndUpdateWithConnection() {
         robot
             .startTest()
             .injectUsersErrorServerMock()
@@ -70,6 +70,20 @@ class UserFragmentTest {
             .validateContainsErrorScreen()
             .injectUsersSuccessMock()
             .swipeRefreshLoad()
+            .validateUsersScreen()
+            .endTest()
+    }
+
+    @Test
+    fun getUsersWithError_AfterRetryAndUpdateWithConnection() {
+        robot
+            .startTest()
+            .injectUsersErrorServerMock()
+            .launchActivity()
+            .validateTitle()
+            .validateContainsErrorScreen()
+            .injectUsersSuccessMock()
+            .tapOnRetry()
             .validateUsersScreen()
             .endTest()
     }

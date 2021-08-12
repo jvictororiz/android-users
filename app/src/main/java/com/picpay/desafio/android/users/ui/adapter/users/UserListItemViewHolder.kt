@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.ui.adapter.users
+package com.picpay.desafio.android.users.ui.adapter.users
 
 import android.graphics.drawable.Drawable
 import android.view.View

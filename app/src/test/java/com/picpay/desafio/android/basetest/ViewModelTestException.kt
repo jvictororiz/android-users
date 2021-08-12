@@ -1,3 +1,4 @@
-package com.picpay.desafio.android.config
+package com.picpay.desafio.android.basetest
 
-class ViewModelTestException(message: String) : Exception(message)
+@SinceKotlin("1.1")
+internal typealias ViewModelTestException = java.lang.AssertionError

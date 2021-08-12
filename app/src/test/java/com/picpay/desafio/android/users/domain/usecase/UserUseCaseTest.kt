@@ -1,12 +1,12 @@
-package com.picpay.desafio.android.domain.usecase
+package com.picpay.desafio.android.users.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.domain.exception.DefaultException
-import com.picpay.desafio.android.domain.model.User
-import com.picpay.desafio.android.domain.repository.contract.UserRepository
+import com.picpay.desafio.android.users.domain.exception.DefaultException
+import com.picpay.desafio.android.users.domain.model.User
+import com.picpay.desafio.android.users.domain.repository.contract.UserRepository
 import io.reactivex.Single
 import org.junit.Rule
 import org.junit.Test
@@ -29,7 +29,7 @@ class UserUseCaseTest {
         val expectedDomain = mockUsersResponse()
         whenever(repository.fetchAll()).then { Single.just(expectedDomain) }
 
-        repository.fetchAll()
+        useCase.getAll()
             .test()
             .assertValue(expectedDomain)
             .assertNoErrors()
@@ -43,7 +43,7 @@ class UserUseCaseTest {
         val errorExpected = DefaultException("erro")
         whenever(repository.fetchAll()).then { Single.error<List<User>>(errorExpected) }
 
-        repository.fetchAll()
+        useCase.getAll()
             .test()
             .assertError(errorExpected)
             .assertNotComplete()
@@ -56,7 +56,7 @@ class UserUseCaseTest {
         val expectedDomain = mockUsersResponse()
         whenever(repository.getLocalUsers()).then { Single.just(expectedDomain) }
 
-        repository.getLocalUsers()
+        useCase.getAllLocal()
             .test()
             .assertValue(expectedDomain)
             .assertNoErrors()
@@ -70,7 +70,7 @@ class UserUseCaseTest {
         val errorExpected = DefaultException("erro")
         whenever(repository.getLocalUsers()).then { Single.error<List<User>>(errorExpected) }
 
-        repository.getLocalUsers()
+        useCase.getAllLocal()
             .test()
             .assertError(errorExpected)
             .assertNotComplete()

@@ -1,26 +1,20 @@
-package com.picpay.desafio.android
+package com.picpay.desafio.android.base
 
 import android.app.Application
-import com.picpay.desafio.android.di.userModules
+import com.picpay.desafio.android.BuildConfig
+import com.picpay.desafio.android.base.di.baseModule
+import com.picpay.desafio.android.users.di.usersModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-open class BaseApplication : Application() {
+class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
             androidContext(this@BaseApplication)
-            modules(userModules)
+            modules(baseModule)
         }
     }
 
-    open fun getBaseUrl() = BuildConfig.BASE_URL
-}
-
-fun <T> T.makeIf(add: Boolean, block: (T) -> T): T {
-    return if (add) {
-        block(this)
-    } else {
-        this
-    }
+    fun getBaseUrl() = BuildConfig.BASE_URL
 }

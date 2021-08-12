@@ -1,25 +1,26 @@
-package com.picpay.desafio.android.ui.fragment.users
+package com.picpay.desafio.android.users.ui.fragment.users
 
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.picpay.desafio.android.AppDatabaseConfig
 import com.picpay.desafio.android.R
+import com.picpay.desafio.android.base.di.builders.AppDatabase
 import com.picpay.desafio.android.users.data.local.entity.UserDB
-import com.picpay.desafio.android.ui.activity.MainActivity
-import com.picpay.desafio.android.ui.fragment.config.BaseRobotTest
+import com.picpay.desafio.android.users.ui.activity.UserActivity
+import com.picpay.desafio.android.users.ui.fragment.basetest.BaseRobotTest
 import org.hamcrest.Matchers.not
 import org.koin.test.KoinTest
 import org.koin.test.inject
 
-class UserFragmentRobot : BaseRobotTest<MainActivity>(), KoinTest {
+class UserFragmentRobot : BaseRobotTest<UserActivity>(), KoinTest {
 
-    private val database by inject<AppDatabaseConfig>()
+    private val database by inject<AppDatabase>()
 
     fun startTest() = apply {
         startServer()
@@ -31,6 +32,10 @@ class UserFragmentRobot : BaseRobotTest<MainActivity>(), KoinTest {
 
     fun swipeRefreshLoad() = apply {
         onView(withId(R.id.swipeRefresh)).perform(swipeDown())
+    }
+
+    fun tapOnRetry() = apply {
+        onView(withId(R.id.btn_retry)).perform(click())
     }
 
     fun injectUsersSuccessMock() = apply {

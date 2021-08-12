@@ -1,26 +1,26 @@
-package com.picpay.desafio.android.ui.viewmodel
+package com.picpay.desafio.android.users.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.picpay.desafio.android.R
-import com.picpay.desafio.android.ResourceManager
-import com.picpay.desafio.android.domain.exception.NetworkException
-import com.picpay.desafio.android.domain.model.User
-import com.picpay.desafio.android.domain.usecase.contract.UserUseCase
-import com.picpay.desafio.android.ui.viewmodel.model.UserState
+import com.picpay.desafio.android.base.di.builders.ResourceManager
+import com.picpay.desafio.android.users.domain.exception.NetworkException
+import com.picpay.desafio.android.users.domain.model.User
+import com.picpay.desafio.android.users.domain.usecase.contract.UserUseCase
+import com.picpay.desafio.android.users.viewmodel.model.UserState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class UserViewModel(
     private val resource: ResourceManager,
-    private val userUseCase: UserUseCase
-) : BaseViewModel() {
-    val stateLiveData: LiveData<UserState> get() = _state
-    private var _state = MutableLiveData<UserState>()
+    private val userUseCase: UserUseCase,
+    private val state: MutableLiveData<UserState>
+) : BaseViewModel<UserState>() {
+
+    val stateLiveData: LiveData<UserState> get() = state
 
     init {
         getUsers()
-        
     }
 
     fun tapOnRetry() {
@@ -28,12 +28,11 @@ class UserViewModel(
     }
 
     private fun getUsers() {
-        notifyScreen { UserState.LoadingState(true) }
+        notifyScreen { UserState.LoadingState }
         disposable.add(
             userUseCase.getAll()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .doAfterTerminate(::doAfterTerminate)
                 .subscribe({
                     usersOnSuccess(it)
                 }, {
@@ -49,10 +48,6 @@ class UserViewModel(
             .doOnSubscribe(disposable::add)
             .doOnSuccess(::onLocalSuccess)
             .subscribe()
-    }
-
-    private fun doAfterTerminate() = notifyScreen {
-        UserState.LoadingState(false)
     }
 
     private fun usersOnSuccess(users: List<User>) = notifyScreen {
@@ -82,6 +77,6 @@ class UserViewModel(
     }
 
     private fun notifyScreen(block: () -> UserState) {
-        _state.value = ((block()))
+        state.value = ((block()))
     }
 }

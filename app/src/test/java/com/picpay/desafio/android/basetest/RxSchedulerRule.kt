@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.config
+package com.picpay.desafio.android.basetest
 
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
@@ -13,10 +13,7 @@ class RxSchedulerRule : TestRule {
     override fun apply(base: Statement, description: Description) =
         object : Statement() {
             override fun evaluate() {
-                RxAndroidPlugins.reset()
                 RxAndroidPlugins.setInitMainThreadSchedulerHandler { trampoline }
-
-                RxJavaPlugins.reset()
                 RxJavaPlugins.setIoSchedulerHandler { trampoline }
                 RxJavaPlugins.setNewThreadSchedulerHandler { trampoline }
                 RxJavaPlugins.setComputationSchedulerHandler { trampoline }

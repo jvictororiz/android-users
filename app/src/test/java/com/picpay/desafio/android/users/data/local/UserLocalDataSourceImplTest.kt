@@ -1,12 +1,11 @@
-package com.picpay.desafio.android.unit.users.data.local
+package com.picpay.desafio.android.users.data.local
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.data.local.UserLocalDataSourceImpl
-import com.picpay.desafio.android.data.local.dao.UserDao
-import com.picpay.desafio.android.data.local.entity.UserDB
-import com.picpay.desafio.android.domain.exception.DefaultException
+import com.picpay.desafio.android.users.data.local.dao.UserDao
+import com.picpay.desafio.android.users.data.local.entity.UserDB
+import com.picpay.desafio.android.users.domain.exception.DefaultException
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Test

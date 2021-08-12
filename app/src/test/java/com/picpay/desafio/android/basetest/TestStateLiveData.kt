@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.users.viewmodel
+package com.picpay.desafio.android.basetest
 
 import androidx.lifecycle.MutableLiveData
 

@@ -1,31 +1,27 @@
-package com.picpay.desafio.android.di
+package com.picpay.desafio.android.users.di
 
-import com.picpay.desafio.android.AppDatabase
-import com.picpay.desafio.android.BaseApplication
-import com.picpay.desafio.android.ResourceManager
-import com.picpay.desafio.android.buildRetrofit
-import com.picpay.desafio.android.users.data.remote.service.UserService
+import androidx.lifecycle.MutableLiveData
+import com.picpay.desafio.android.base.di.builders.AppDatabase
 import com.picpay.desafio.android.users.data.local.UserLocalDataSourceImpl
 import com.picpay.desafio.android.users.data.local.contract.UserLocalDataSource
 import com.picpay.desafio.android.users.data.remote.UserRemoteDataSourceImpl
 import com.picpay.desafio.android.users.data.remote.contract.UserRemoteDataSource
+import com.picpay.desafio.android.users.data.remote.service.UserService
 import com.picpay.desafio.android.users.domain.repository.UserRepositoryImpl
 import com.picpay.desafio.android.users.domain.repository.contract.UserRepository
 import com.picpay.desafio.android.users.domain.usecase.UserUseCaseImpl
 import com.picpay.desafio.android.users.domain.usecase.contract.UserUseCase
-import com.picpay.desafio.android.users.viewmodel.StateMutableLiveData
 import com.picpay.desafio.android.users.viewmodel.UserViewModel
-import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
-val userModules = module {
+val usersModule = module {
     viewModel {
         UserViewModel(
             userUseCase = get(),
             resource = get(),
-            _stateLiveData = StateMutableLiveData()
+            state = MutableLiveData()
         )
     }
     factory<UserUseCase> { UserUseCaseImpl(repository = get()) }
@@ -41,12 +37,7 @@ val userModules = module {
     factory<UserRemoteDataSource> {
         UserRemoteDataSourceImpl(service = get())
     }
-
-    factory { ResourceManager(context = get()) }
-
-    factory { buildRetrofit((androidApplication() as BaseApplication).getBaseUrl()) }
     factory<UserService> { get<Retrofit>().create(UserService::class.java) }
 
-    factory { AppDatabase(applicationContext = get()) }
-    factory { get<AppDatabase>().create().userDao() }
+    factory { get<AppDatabase>().userDao() }
 }

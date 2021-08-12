@@ -1,6 +1,6 @@
-package com.picpay.desafio.android.domain.usecase.contract
+package com.picpay.desafio.android.users.domain.usecase.contract
 
-import com.picpay.desafio.android.domain.model.User
+import com.picpay.desafio.android.users.domain.model.User
 import io.reactivex.Single
 
 interface UserUseCase {

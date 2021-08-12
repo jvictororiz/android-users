@@ -1,7 +1,5 @@
-package com.picpay.desafio.android.users.viewmodel
+package com.picpay.desafio.android.basetest
 
-import com.picpay.desafio.android.baseTest.TestStateLiveData
-import com.picpay.desafio.android.baseTest.ViewModelTestException
 import com.picpay.desafio.android.users.viewmodel.model.UserState
 
 open class BaseViewModelTest<T> {

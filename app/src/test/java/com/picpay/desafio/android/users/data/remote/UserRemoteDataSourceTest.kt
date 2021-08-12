@@ -1,14 +1,12 @@
-package com.picpay.desafio.android.unit.users.data.remote
+package com.picpay.desafio.android.users.data.remote
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.data.remote.dto.response.UserDto
-import com.picpay.desafio.android.data.remote.service.UserService
-import com.picpay.desafio.android.data.local.entity.UserDB
-import com.picpay.desafio.android.data.remote.UserRemoteDataSourceImpl
-import com.picpay.desafio.android.domain.exception.DefaultException
-import com.picpay.desafio.android.domain.model.User
+import com.picpay.desafio.android.users.data.local.entity.UserDB
+import com.picpay.desafio.android.users.data.remote.dto.response.UserDto
+import com.picpay.desafio.android.users.data.remote.service.UserService
+import com.picpay.desafio.android.users.domain.exception.DefaultException
 import io.reactivex.Single
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,6 +44,5 @@ class UserRemoteDataSourceTest {
             .dispose()
     }
 
-    private fun mockUsersResponse() = listOf(User("img", "name", 1, "username"))
     private fun mockUsersDtoResponse() = listOf(UserDto("img", "name", 1, "username"))
 }

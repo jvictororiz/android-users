@@ -1,16 +1,16 @@
-package com.picpay.desafio.android.domain.repository
+package com.picpay.desafio.android.users.domain.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.data.remote.dto.response.UserDto
-import com.picpay.desafio.android.data.local.contract.UserLocalDataSource
-import com.picpay.desafio.android.data.local.entity.UserDB
-import com.picpay.desafio.android.data.remote.contract.UserRemoteDataSource
-import com.picpay.desafio.android.domain.exception.DefaultException
-import com.picpay.desafio.android.domain.model.User
+import com.picpay.desafio.android.users.data.remote.dto.response.UserDto
+import com.picpay.desafio.android.users.data.local.contract.UserLocalDataSource
+import com.picpay.desafio.android.users.data.local.entity.UserDB
+import com.picpay.desafio.android.users.data.remote.contract.UserRemoteDataSource
+import com.picpay.desafio.android.users.domain.exception.DefaultException
+import com.picpay.desafio.android.users.domain.model.User
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Rule

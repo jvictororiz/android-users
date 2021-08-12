@@ -1,20 +1,26 @@
-package com.picpay.desafio.android.ui.viewmodel
+package com.picpay.desafio.android.users.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.nhaarman.mockitokotlin2.*
-import com.picpay.desafio.android.ResourceManager
-import com.picpay.desafio.android.unit.config.BaseViewModelTest
-import com.picpay.desafio.android.unit.config.RxSchedulerRule
-import com.picpay.desafio.android.domain.model.User
-import com.picpay.desafio.android.domain.usecase.contract.UserUseCase
-import com.picpay.desafio.android.ui.viewmodel.model.UserState
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import com.picpay.desafio.android.base.di.builders.ResourceManager
+import com.picpay.desafio.android.basetest.BaseViewModelTest
+import com.picpay.desafio.android.basetest.RxSchedulerRule
+import com.picpay.desafio.android.basetest.TestStateLiveData
+import com.picpay.desafio.android.users.domain.model.User
+import com.picpay.desafio.android.users.domain.usecase.contract.UserUseCase
+import com.picpay.desafio.android.users.viewmodel.model.UserState
 import io.reactivex.Single
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
 
-
-class UserViewModelTest : BaseViewModelTest() {
+@RunWith(MockitoJUnitRunner::class)
+class UserViewModelTest : BaseViewModelTest<UserState>() {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -27,78 +33,30 @@ class UserViewModelTest : BaseViewModelTest() {
     private val resourceManager: ResourceManager = mock()
 
     private lateinit var viewModel: UserViewModel
+    private var stateLiveData = TestStateLiveData<UserState>()
 
-    private var stateLiveData: Observer<UserState> = mock()
+    @Before
+    fun init() {
+        setupState(stateLiveData)
+    }
+
+    @After
+    fun after() {
+        stateLiveData.clear()
+    }
+
 
     @Test
     fun `getUser with success in network`() {
         val expectedResponse = mockUsersResponse()
         whenever(useCase.getAll()).thenReturn(Single.just(expectedResponse))
 
-        viewModel = UserViewModel(resourceManager, useCase)
+        viewModel = UserViewModel(resourceManager, useCase, stateLiveData)
 
-        viewModel.stateLiveData.observeForever(stateLiveData)
-        inOrder(stateLiveData) {
-            verify(stateLiveData).onChanged(UserState.LoadingState(true))
-            verify(stateLiveData).onChanged(UserState.SuccessState(expectedResponse))
-            verify(stateLiveData).onChanged(UserState.LoadingState(false))
-            verifyNoMoreInteractions(stateLiveData)
-        }
-
-//        viewModel.init()
-    }
-
-    @Test
-    fun `getUser with success with error in network and without cache`() {
-        val expectedString1 = "teste"
-        val expectedString2 = "teste2"
-        whenever(resourceManager.message(any()))
-            .thenReturn(expectedString1)
-            .thenReturn(expectedString2)
-        whenever(useCase.getAll()).thenReturn(Single.error(Exception()))
-        whenever(useCase.getAllLocal()).thenReturn(Single.just(listOf()))
-
-        viewModel = UserViewModel(resourceManager, useCase)
-        viewModel.stateLiveData.observeForever(stateLiveData)
-
-        inOrder(stateLiveData) {
-            verify(stateLiveData).onChanged(UserState.LoadingState(true))
-            verify(stateLiveData).onChanged(
-                UserState.ErrorState(
-                    expectedString1,
-                    expectedString2
-                )
-            )
-            verify(stateLiveData).onChanged(UserState.SuccessLocalState(listOf()))
-                    verify(stateLiveData).onChanged(UserState.LoadingState(false))
-            verifyNoMoreInteractions(stateLiveData)
-        }
-
-
-    }
-
-    @Test
-    fun `getUser with success with error in network and with cache`() {
-        val expectedString1 = "teste"
-        val expectedString2 = "teste2"
-        whenever(resourceManager.message(any()))
-            .thenReturn(expectedString1)
-            .thenReturn(expectedString2)
-        whenever(useCase.getAll()).thenReturn(Single.error(Exception()))
-        whenever(useCase.getAllLocal()).thenReturn(Single.just(mockUsersResponse()))
-
-        viewModel = UserViewModel(resourceManager, useCase)
-        viewModel.stateLiveData.observeForever(stateLiveData)
-//        viewModel.init()
-
-
-        inOrder(stateLiveData) {
-            verify(stateLiveData).onChanged(UserState.LoadingState(true))
-            verify(stateLiveData).onChanged(UserState.ErrorState(expectedString1, expectedString2))
-            verify(stateLiveData).onChanged(UserState.SuccessLocalState(mockUsersResponse()))
-            verify(stateLiveData).onChanged(UserState.LoadingState(false))
-            verifyNoMoreInteractions(stateLiveData)
-        }
+        verifyOrder(
+            UserState.LoadingState,
+            UserState.SuccessState(expectedResponse)
+        )
     }
 
     @Test
@@ -111,17 +69,53 @@ class UserViewModelTest : BaseViewModelTest() {
         whenever(useCase.getAll()).thenReturn(Single.error(Exception()))
         whenever(useCase.getAllLocal()).thenReturn(Single.just(listOf()))
 
-        viewModel = UserViewModel(resourceManager, useCase)
-        viewModel.stateLiveData.observeForever(stateLiveData)
-//        viewModel.init()
+        viewModel = UserViewModel(resourceManager, useCase, stateLiveData)
 
-        inOrder(stateLiveData) {
-            verify(stateLiveData).onChanged(UserState.LoadingState(true))
-            verify(stateLiveData).onChanged(UserState.ErrorState(expectedString1, expectedString2))
-            verify(stateLiveData).onChanged(UserState.SuccessLocalState(listOf()))
-            verify(stateLiveData).onChanged(UserState.LoadingState(false))
-            verifyNoMoreInteractions(stateLiveData)
-        }
+        verifyOrder(
+            UserState.LoadingState,
+            UserState.ErrorState(expectedString1, expectedString2),
+            UserState.SuccessLocalState(listOf())
+        )
+    }
+
+    @Test
+    fun `getUser with success with error in remote and without cache`() {
+        val expectedString1 = "teste"
+        val expectedString2 = "teste2"
+        whenever(resourceManager.message(any()))
+            .thenReturn(expectedString1)
+            .thenReturn(expectedString2)
+        whenever(useCase.getAll()).thenReturn(Single.error(Exception()))
+        whenever(useCase.getAllLocal()).thenReturn(Single.just(listOf()))
+
+        viewModel = UserViewModel(resourceManager, useCase, stateLiveData)
+
+        verifyOrder(
+            UserState.LoadingState,
+            UserState.ErrorState(
+                expectedString1,
+                expectedString2
+            ),
+            UserState.SuccessLocalState(listOf())
+        )
+    }
+
+    @Test
+    fun `getUser with error in network and with cache`() {
+        val expectedString1 = "teste"
+        val expectedString2 = "teste2"
+        whenever(resourceManager.message(any()))
+            .thenReturn(expectedString1)
+            .thenReturn(expectedString2)
+        whenever(useCase.getAll()).thenReturn(Single.error(Exception()))
+        whenever(useCase.getAllLocal()).thenReturn(Single.just(mockUsersResponse()))
+
+        viewModel = UserViewModel(resourceManager, useCase, stateLiveData)
+
+        verifyOrder(
+            UserState.LoadingState,
+            UserState.ErrorState(expectedString1, expectedString2),
+            UserState.SuccessLocalState(mockUsersResponse()))
     }
 
     private fun mockUsersResponse() = listOf(User("img", "name", 1, "username"))

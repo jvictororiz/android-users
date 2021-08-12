@@ -1,6 +1,7 @@
-package com.picpay.desafio.android.base
+package com.picpay.desafio.android.base.di.builders
 
 import com.picpay.desafio.android.BuildConfig
+import com.picpay.desafio.android.base.runIf
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,7 +18,7 @@ fun buildRetrofit(
 ): Retrofit = Retrofit.Builder()
     .client(
         OkHttpClient().newBuilder()
-            .makeIf(BuildConfig.DEBUG) {
+            .runIf(BuildConfig.DEBUG) {
                 it.addInterceptor(HttpLoggingInterceptor().apply {
                     level = (HttpLoggingInterceptor.Level.BODY)
                 })

@@ -1,16 +1,16 @@
-package com.picpay.desafio.android.users.ui.fragment.config
+package com.picpay.desafio.android.users.ui.fragment.basetest
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
-import com.picpay.desafio.android.users.ui.activity.MainActivity
+import com.picpay.desafio.android.users.ui.activity.UserActivity
 import okhttp3.mockwebserver.*
 import org.koin.test.KoinTest
 
 open class BaseRobotTest<T : AppCompatActivity> : KoinTest {
 
-    protected lateinit var scenario: ActivityScenario<MainActivity>
+    protected lateinit var scenario: ActivityScenario<UserActivity>
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private val mockWebServer by lazy { MockWebServer() }
 
